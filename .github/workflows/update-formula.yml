@@ -41,7 +41,7 @@ jobs:
           git clone https://x-access-token:${{ secrets.FORMULA_PUSH_TOKEN }}@github.com/beardedcrows/homebrew-smeller-report.git
           cd homebrew-smeller-report
           
-          cat > smeller-report-generator.rb << EOF
+          cat > smeller-report-generator.rb << 'EOF'
 class SmellerReportGenerator < Formula
   desc "Smeller Report Generator CLI"
   homepage "https://github.com/beardedcrows/Smeller-Report-Generator"
