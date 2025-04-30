@@ -41,19 +41,18 @@ jobs:
           git clone https://x-access-token:${{ secrets.FORMULA_PUSH_TOKEN }}@github.com/beardedcrows/homebrew-smeller-report.git
           cd homebrew-smeller-report
           
-          cat > smeller-report-generator.rb << 'EOF'
-class SmellerReportGenerator < Formula
-  desc "Smeller Report Generator CLI"
-  homepage "https://github.com/beardedcrows/Smeller-Report-Generator"
-  url "https://github.com/beardedcrows/Smeller-Report-Generator/releases/download/${{ env.RELEASE_VERSION }}/Smeller-Report-Generator"
-  sha256 "${{ env.SHA256 }}"
-  version "${{ env.RELEASE_VERSION }}"
-
-  def install
-    bin.install "Smeller-Report-Generator"
-  end
-end
-EOF
+          # Create formula file
+          echo 'class SmellerReportGenerator < Formula' > smeller-report-generator.rb
+          echo '  desc "Smeller Report Generator CLI"' >> smeller-report-generator.rb
+          echo '  homepage "https://github.com/beardedcrows/Smeller-Report-Generator"' >> smeller-report-generator.rb
+          echo '  url "https://github.com/beardedcrows/Smeller-Report-Generator/releases/download/${{ env.RELEASE_VERSION }}/Smeller-Report-Generator"' >> smeller-report-generator.rb
+          echo '  sha256 "${{ env.SHA256 }}"' >> smeller-report-generator.rb
+          echo '  version "${{ env.RELEASE_VERSION }}"' >> smeller-report-generator.rb
+          echo '' >> smeller-report-generator.rb
+          echo '  def install' >> smeller-report-generator.rb
+          echo '    bin.install "Smeller-Report-Generator"' >> smeller-report-generator.rb
+          echo '  end' >> smeller-report-generator.rb
+          echo 'end' >> smeller-report-generator.rb
           
           echo "Formula content:"
           cat smeller-report-generator.rb
