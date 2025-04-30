@@ -23,13 +23,12 @@ jobs:
           SHA=$(shasum -a 256 Smeller-Report-Generator | awk '{print $1}')
           echo "SHA256=$SHA" >> $GITHUB_ENV
 
-      - name: Clone Homebrew Tap repo
+      - name: Clone Homebrew Tap repo and update formula
         run: |
           git clone https://x-access-token:${{ secrets.FORMULA_PUSH_TOKEN }}@github.com/beardedcrows/homebrew-smeller-report.git
           cd homebrew-smeller-report
 
-          # Update formula
-          cat > smeller-report-generator.rb <<EOF
+          cat <<EOF > smeller-report-generator.rb
 class SmellerReportGenerator < Formula
   desc "Smeller Report Generator CLI"
   homepage "https://github.com/beardedcrows/Smeller-Report-Generator"
