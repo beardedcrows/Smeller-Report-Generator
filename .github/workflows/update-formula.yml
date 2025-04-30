@@ -7,8 +7,9 @@ on:
 jobs:
   update-formula:
     runs-on: macos-latest
+
     steps:
-      - name: Get the tag name
+      - name: Get the release version
         id: get_version
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
@@ -23,7 +24,7 @@ jobs:
           SHA=$(shasum -a 256 Smeller-Report-Generator | awk '{print $1}')
           echo "SHA256=$SHA" >> $GITHUB_ENV
 
-      - name: Clone Homebrew Tap repo and update formula
+      - name: Clone Homebrew Tap and update formula
         run: |
           git clone https://x-access-token:${{ secrets.FORMULA_PUSH_TOKEN }}@github.com/beardedcrows/homebrew-smeller-report.git
           cd homebrew-smeller-report
