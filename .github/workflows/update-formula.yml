@@ -1,0 +1,50 @@
+name: Update Homebrew Formula
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-formula:
+    runs-on: macos-latest
+
+    steps:
+      - name: Get the release version
+        id: get_version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Download the release binary
+        run: |
+          curl -L -o Smeller-Report-Generator "https://github.com/${{ github.repository }}/releases/download/${{ env.RELEASE_VERSION }}/Smeller-Report-Generator"
+          chmod +x Smeller-Report-Generator
+
+      - name: Calculate SHA256
+        id: sha
+        run: |
+          SHA=$(shasum -a 256 Smeller-Report-Generator | awk '{print $1}')
+          echo "SHA256=$SHA" >> $GITHUB_ENV
+
+      - name: Clone Homebrew Tap and update formula
+        run: |
+          git clone https://x-access-token:${{ secrets.FORMULA_PUSH_TOKEN }}@github.com/beardedcrows/homebrew-smeller-report.git
+          cd homebrew-smeller-report
+
+          cat <<EOF > smeller-report-generator.rb
+class SmellerReportGenerator < Formula
+  desc "Smeller Report Generator CLI"
+  homepage "https://github.com/beardedcrows/Smeller-Report-Generator"
+  url "https://github.com/beardedcrows/Smeller-Report-Generator/releases/download/${{ env.RELEASE_VERSION }}/Smeller-Report-Generator"
+  sha256 "${{ env.SHA256 }}"
+  version "${{ env.RELEASE_VERSION }}"
+
+  def install
+    bin.install "Smeller-Report-Generator"
+  end
+end
+EOF
+
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add smeller-report-generator.rb
+          git commit -m "Update formula to version ${{ env.RELEASE_VERSION }}"
+          git push
