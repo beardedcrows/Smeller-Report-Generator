@@ -48,3 +48,4 @@ EOF
           git add smeller-report-generator.rb
           git commit -m "Update formula to version ${{ env.RELEASE_VERSION }}"
           git push
+
